@@ -1,0 +1,214 @@
+Texto
+    AGREGAR
+    ofstream f;
+    f.open(".txt",ios::app);
+    int n;
+    string ci,apellido
+    cin >> n;
+    for (int i=0;i<n;i++){
+        cout <<"Carnet de identidad :";cin >> ci;
+        cout <<"apellido paterno :";cin >> apellido;
+
+        f <<ci<<";"<<apellido<<endl;
+    }
+    f.close();
+
+    Mostrar
+    ifstream f;
+    f.open(".txt");
+    char cad[30];
+    char *ci1,*apellido1;
+    cout <<"          REPORTE DE BASE DE DATOS \n";
+    cout <<"          ===================\n";
+    cout <<"Carnet=====Apellido=====Nombre====\n";
+    while(f>>cad){
+        ci1=strtok(cad,";");
+        apellido1=strtok(NULL,";");
+        cout <<setw(3)<<ci1<<setw(16)<<apellido1<<endl;
+     }
+     f.close();
+
+     Copiar
+     ifstream f;
+    f.open("cedulas.txt");
+    ofstream q;
+    q.open("ced_interior.txt");
+    int num,a;
+    char *ci1,*apellido1,*nombre1,cad[100];
+    while(f>>cad){
+    ci1=strtok(cad,";");
+    apellido1=strtok(NULL,";");
+    nombre1=strtok(NULL,";");
+    a=atoi(ci1);
+    if(a<10000){
+    q <<ci1<<";"<<apellido1<<";"<<nombre1<<endl;}
+    }
+    f.close();q.close();
+
+
+Binario
+
+    Agregar
+    cuenta fc;
+    ofstream out;
+    out.open("venta.bin",ios::binary|ios::app);
+    int n;
+    cout<<"Cuantos productos a agregar:";
+    cin >> n;
+    for (int i=0;i<n;i++)
+    {
+       cout <<"Numero de prodcuto: ";cin >> fc.nro;
+        cout <<"Nombre producto: ";cin >> fc.nombre;
+        cout<<"Procedencia: "; cin>>fc.proc;
+        cout<<"Unidades vendidas: "; cin>>fc.un; cout<<endl;
+       out.write((char *)&fc,sizeof(fc));
+    }
+    out.close();
+
+    Mostrar
+    cuenta fc;
+    fstream in;
+    in.open("cuenta.bin",ios::binary|ios::in);
+
+    cout <<"          REPORTE DE VENTAS\n";
+    cout <<"          ===================\n";
+    cout <<"=Numero cuenta=====Nombre=====Saldo====Fecha de apertura\n";
+   while(in.read((char *)&fc,sizeof(fc))){
+
+        if (fc.status==true){if(fc.saldo>=sum/i){
+        cout <<setw(1)<<fc.numf <<"|"<<setw(21)<<fc.nombre<<"|"<<setw(7)<<"|"<<fc.saldo<<setw(7)<<"|"<<fc.f1<<"/"<<fc.f2<<"/"<<fc.f3;cout<<endl;}}
+           }system("pause");
+     in.close();
+
+     copiar
+     cuenta fc; cuenta1 fd; char f[]="taiwan";
+    fstream in,q; fstream out;
+    in.open("venta.bin",ios::binary|ios::in);
+    out.open("venta1.bin",ios::binary|ios::out);
+    cout <<"          REPORTE DE VENTAS\n";
+    cout <<"          ===================\n";
+    cout <<"=Numero producto=====Nombre=====Procedencia====Unidades vendidas\n";
+   while(in.read((char *)&fc,sizeof(fc))){
+        if(strcmp(fc.proc,f)==0){if(fc.un>1000){
+        strcpy(fd.nro,fc.nro);
+        strcpy(fd.nombre,fc.nombre);
+        strcpy(fd.proc,fc.proc);
+        fd.un=fc.un;
+        out.write((char *)&fd,sizeof(fd));}}
+    cout <<setw(1)<<fc.nro <<"|"<<setw(21)<<fc.nombre<<"|"<<setw(7)<<"|"<<fc.proc<<setw(7)<<"|"<<fc.un;cout<<endl;}
+    out.close();
+
+
+Acceso
+    int num;
+    file.seekg((num-1)*sizeof(c));
+    file.read((char*)&c,sizeof(c));
+
+    file.seekp((num-1)*sizeof(c));
+    file.write((char*)&c,sizeof(c));
+
+ID
+
+    #include <bits/stdc++.h>
+
+struct loteria{
+int nro;
+int lot;
+};
+loteria l;
+using namespace std;
+void almacenar(int&,int&);
+void sortear();
+void mostrar(int);
+void counter(int&);
+bool checkrep(int );
+main(){
+
+    int o,z,n;
+    srand(time(NULL));
+    do
+    {
+        system("cls");
+        cout<<setw(54)<<"SORTEO TICKETS DE LOTERIA"<<endl;
+        cout<<"================================================================================"<<endl;
+        cout<<"1. almacenar tickets"<<endl;
+        cout<<"2. Mostrar almacenados"<<endl;
+        cout<<"3. sortear"<<endl;
+        cout<<"4. Salir"<<endl;
+        cout<<endl<<"Ingrese una opcion: ";cin>>o;
+        counter(z=0);
+        switch (o)
+        {
+            case 1:z++;almacenar(z,n);break;
+            case 2:mostrar(z);break;
+            case 3:sortear();break;
+        }
+    }while(o!=4);
+   }
+
+void counter(int& z)
+{
+    fstream file;
+    file.open("loteria.bin",ios::in);
+    while(file.read((char*)&l,sizeof(l)))
+        z++;
+}
+
+bool checkrep(int n)
+{   fstream file;
+    file.open("loteria.bin",ios::binary|ios::in);
+    while(file.read((char*)&l,sizeof(l)))
+        if(n == l.lot)
+            return true;
+    return false;
+}
+
+
+void almacenar(int &z,int &n){
+    int a;
+    fstream file;
+    file.open("loteria.bin",ios::binary|ios::app|ios::out);
+    cout<<"Cuantos tickets a almacenar:";
+    cin >> a;
+    for (int i=0;i<a;i++)
+    {
+
+       /* do {n=rand()%(101)+1;}
+        while(checkrep(n));*/
+        n=rand()%(101)+1;
+        l.nro=z; l.lot=n;
+        cout<<l.nro<<" "<<l.lot<<endl;
+        z++;
+        file.write((char*)&l,sizeof(l));
+
+
+    }
+    system("pause");
+    file.close();
+}
+void mostrar(int z){  loteria l;
+system("cls");
+    cout<<setw(54)<<"Tickets de loteria"<<endl;
+    cout<<"================================================================================"<<endl;
+    cout<<endl;
+    if(z==0)    cout<<"No existen numeros almacenados"<<endl;
+    else
+    {
+        fstream file;
+        file.open("loteria.bin",ios::binary|ios::in);
+        cout<<" NRO |   Ticket  "<<endl;
+        cout<<"==============================================================================="<<endl;
+        while(file.read((char*)&l,sizeof(l))){
+            cout<<l.nro<<setw(19)<<l.lot<<endl;
+        }
+        file.seekg(0, ios::end);
+        int qq = sizeof("loteria.bin");
+        cout<<qq<<endl;
+        file.close();
+    }
+    cout<<endl;
+    system("pause");
+
+}
+void sortear(){}
+
