@@ -109,51 +109,6 @@ Acceso
 
 ID
 
-    #include <bits/stdc++.h>
-
-struct loteria{
-int nro;
-int lot;
-};
-loteria l;
-using namespace std;
-void almacenar(int&,int&);
-void sortear();
-void mostrar(int);
-void counter(int&);
-bool checkrep(int );
-main(){
-
-    int o,z,n;
-    srand(time(NULL));
-    do
-    {
-        system("cls");
-        cout<<setw(54)<<"SORTEO TICKETS DE LOTERIA"<<endl;
-        cout<<"================================================================================"<<endl;
-        cout<<"1. almacenar tickets"<<endl;
-        cout<<"2. Mostrar almacenados"<<endl;
-        cout<<"3. sortear"<<endl;
-        cout<<"4. Salir"<<endl;
-        cout<<endl<<"Ingrese una opcion: ";cin>>o;
-        counter(z=0);
-        switch (o)
-        {
-            case 1:z++;almacenar(z,n);break;
-            case 2:mostrar(z);break;
-            case 3:sortear();break;
-        }
-    }while(o!=4);
-   }
-
-void counter(int& z)
-{
-    fstream file;
-    file.open("loteria.bin",ios::in);
-    while(file.read((char*)&l,sizeof(l)))
-        z++;
-}
-
 bool checkrep(int n)
 {   fstream file;
     file.open("loteria.bin",ios::binary|ios::in);
@@ -163,7 +118,6 @@ bool checkrep(int n)
     return false;
 }
 
-
 void almacenar(int &z,int &n){
     int a;
     fstream file;
@@ -172,7 +126,6 @@ void almacenar(int &z,int &n){
     cin >> a;
     for (int i=0;i<a;i++)
     {
-
        /* do {n=rand()%(101)+1;}
         while(checkrep(n));*/
         n=rand()%(101)+1;
@@ -180,35 +133,148 @@ void almacenar(int &z,int &n){
         cout<<l.nro<<" "<<l.lot<<endl;
         z++;
         file.write((char*)&l,sizeof(l));
-
-
     }
     system("pause");
     file.close();
 }
-void mostrar(int z){  loteria l;
-system("cls");
-    cout<<setw(54)<<"Tickets de loteria"<<endl;
-    cout<<"================================================================================"<<endl;
-    cout<<endl;
-    if(z==0)    cout<<"No existen numeros almacenados"<<endl;
-    else
-    {
-        fstream file;
-        file.open("loteria.bin",ios::binary|ios::in);
-        cout<<" NRO |   Ticket  "<<endl;
-        cout<<"==============================================================================="<<endl;
-        while(file.read((char*)&l,sizeof(l))){
-            cout<<l.nro<<setw(19)<<l.lot<<endl;
-        }
-        file.seekg(0, ios::end);
-        int qq = sizeof("loteria.bin");
-        cout<<qq<<endl;
-        file.close();
-    }
-    cout<<endl;
-    system("pause");
 
+
+
+
+/////////////////////////////////////
+using namespace std;
+struct factura
+{
+	int numero;
+	int NIT;
+	double importe;
+	char fecha[20];
+};
+void aumentar();
+void buscar();
+void reporte();
+int main()
+{
+	int v=0,ver;
+	while(true)
+	{
+		system("cls");
+		cout<<"1. Adicionar factura"<<endl;
+		cout<<"2. Buscar"<<endl;
+		cout<<"3. Reporte"<<endl;
+		cout<<"4. Salir"<<endl;
+		cin>>v;
+		switch(v)
+		{
+			case 1:
+				{
+					aumentar();
+					cout<<"\n(1. Salir, 2. Volver al menu principal)"<<endl;
+					cin>>ver;
+					if(ver==2)
+						break;
+					else
+						exit(0);
+				}
+			case 2:
+				{
+					buscar();
+					cout<<"\n(1. Salir, 2. Volver al menu principal)"<<endl;
+					cin>>ver;
+					if(ver==2)
+						break;
+					else
+						exit(0);
+				}
+			case 3:
+				{
+					reporte();
+					cout<<"\n(1. Salir, 2. Volver al menu principal)"<<endl;
+					cin>>ver;
+					if(ver==2)
+						break;
+					else
+						exit(0);
+				}
+			case 4:
+				{
+						exit(0);
+				}
+		}
+	}
 }
-void sortear(){}
+void aumentar()
+{
+	int n=0,num=0;
+	factura e2;
+	fstream in;
+	fstream out;
+	in.open("facturas.bin");
+	cout<<"Cuantos archivos desea a"<<char(164)<<"adir?"<<endl;
+	cin>>num;
+	while(in.read((char*)&e2,sizeof(e2)))
+		{
+			n++;
+		}
+	in.close();
+	out.open("facturas.bin",ios::out|ios::binary|ios::app);
+	for(int i=0;i<num;i++)
+	{
+		cout<<"Factura No: "<<n+1<<endl;
+		e2.numero=n;
+		cout<<"NIT: ";cin>>e2.NIT;
+		cout<<"Importe: ";cin>>e2.importe;
+		time_t tiempo = time(0);
+        struct tm *tlocal = localtime(&tiempo);
+        char output[20];
+        strftime(output,20,"%d/%m/%y %H:%M:%S",tlocal);
+		cout<<"Fecha y hora: "<<output;
+		strcpy(e2.fecha,output);
+		cout<<endl;
+		out.write((char*)&e2,sizeof(e2));
+		n++;
+	}
+	out.close();
+}
+void buscar()
+{
+	int n;
+	factura e1;
+	fstream in;
+	in.open("facturas.bin");
+	cout<<"Ingrese el numero de la factura"<<endl;
+	cin>>n;
+	in.seekg((n-1)*sizeof(e1));
+	in.read((char*)&e1,sizeof(e1));
+	if(e1.numero<0)
+	{
+		cout<<"No existe el numero de factura"<<endl;
+		in.close();
+		return;
+	}
+	else
+	{
+	cout<<"Numero "<<e1.numero+1<<endl;
+	cout<<"NIT: "<<e1.NIT<<endl;
+	cout<<"Importe: "<<e1.importe<<endl;
+	cout<<"Fecha: "<<e1.fecha<<endl;
+	in.close();
+	}
+}
+void reporte()
+{
+	int n;
+	factura e1;
+	fstream in;
+	in.open("facturas.bin");
+	while(in.read((char*)&e1,sizeof(e1)))
+	{
+		cout<<endl;
+		cout<<"Factura No "<<e1.numero+1<<endl;
+		cout<<"NIT: "<<e1.NIT<<endl;
+		cout<<"Importe: "<<e1.importe<<endl;
+		cout<<"Fecha y hora: "<<e1.fecha<<endl;
+	}
+	in.close();
+}
 
